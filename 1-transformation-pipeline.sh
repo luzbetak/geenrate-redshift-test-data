@@ -1,6 +1,59 @@
 #!/usr/bin/env bash
 
-# [Previous code remains the same until deploy_to_server function]
+# Exit on error, undefined variables, and pipe failures
+set -euo pipefail
+
+# Script configuration
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly LOG_FILE="/var/log/deployment-$(date +%Y%m%d-%H%M%S).log"
+readonly SPARK_DIR="40-apache-spark"
+readonly SSH_USER="root"
+readonly SSH_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=5"
+
+# Define server ranges
+readonly SPARK_SERVERS=($(seq 10 16))  # Servers 192.168.1.10-16
+readonly APP_SERVERS=($(seq 17 23))    # Servers 192.168.1.17-23
+
+# Logging function
+log() {
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "[${timestamp}] $*" | tee -a "${LOG_FILE}"
+}
+
+# Error handling
+error() {
+    log "ERROR: $*"
+    exit 1
+}
+
+# Function to check if a server is reachable
+check_server() {
+    local server=$1
+    ping -c 1 -W 2 "${server}" >/dev/null 2>&1
+}
+
+# Function to analyze git repository
+analyze_git_repo() {
+    log "Analyzing git repository for file sizes..."
+    
+    git rev-list master | while read -r rev; do
+        git ls-tree -lr "$rev" | \
+            cut -c54- | \
+            sed -r 's/^ +//g;'
+    done | \
+    sort -u | \
+    perl -e '
+        while (<>) {
+            chomp;
+            @stuff=split("\t");
+            $sums{$stuff[1]} += $stuff[0];
+        }
+        print "$sums{$_} $_\n" for (keys %sums);
+    ' | \
+    sort -rn | \
+    head -n 20
+}
 
 # Function to deploy files to a server
 deploy_to_server() {
@@ -15,7 +68,7 @@ deploy_to_server() {
     if ! check_server "192.168.1.${ip}"; then
         log "WARNING: Server ${server} is not reachable, skipping..."
         return 1
-    fi  # Added missing fi
+    fi
     
     # Create directory if it doesn't exist
     ssh ${SSH_OPTS} "${server}" "mkdir -p ${target_dir}" || {
@@ -31,7 +84,24 @@ deploy_to_server() {
     return 0
 }
 
-# [Middle code remains the same until main function]
+# Function to deploy to a group of servers
+deploy_to_server_group() {
+    local -n servers=$1  # nameref to array
+    local files=$2
+    local success_count=0
+    local total_servers=${#servers[@]}
+    
+    for ip in "${servers[@]}"; do
+        if deploy_to_server "${ip}" "${files}"; then
+            ((success_count++))
+        fi
+    done
+    
+    log "Deployment completed: ${success_count}/${total_servers} servers successful"
+    
+    # Return success only if all deployments succeeded
+    [[ ${success_count} -eq ${total_servers} ]]
+}
 
 # Main function
 main() {
@@ -44,7 +114,7 @@ main() {
     if [[ "${1:-}" == "--analyze" ]]; then
         analyze_git_repo
         exit 0
-    fi  # Added missing fi
+    fi
     
     # Deploy 'go' file to Spark servers
     log "Deploying 'go' file to Spark servers..."
