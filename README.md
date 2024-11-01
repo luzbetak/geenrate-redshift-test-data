@@ -204,6 +204,3 @@ Please follow these guidelines when contributing:
 4. Write unit tests for new features
 5. Update documentation as needed
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
