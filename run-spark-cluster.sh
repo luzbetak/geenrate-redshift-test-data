@@ -34,11 +34,10 @@ show_menu() {
     echo "==============================================="
     echo "           Apache Spark Runner Menu            "
     echo "==============================================="
-    echo "1. Run WordCount (Local Mode)"
-    echo "2. Run Data Generator (Local Mode)"
-    echo "3. Run WordCount (Cluster Mode)"
-    echo "4. Run Data Generator (Cluster Mode)"
-    echo "5. Clean and Restart Hadoop Services"
+    echo "1. Run Data Generator (Local Mode)"
+    echo "2. Run WordCount (Cluster Mode)"
+    echo "3. Run Data Generator (Cluster Mode)"
+    echo "4. Clean and Restart Hadoop Services"
     echo "0. Exit"
     echo "==============================================="
 }
@@ -148,13 +147,6 @@ main() {
                 exit 0
                 ;;
             1)
-                read -r -p "Clean logs and restart services? (y/n): " restart
-                [[ $restart == "y" ]] && restart_services
-                
-                config=($(get_cluster_config "local"))
-                run_wordcount "local" "${config[@]}"
-                ;;
-            2)
                 read -r -p "Enter start slice number: " slice_start
                 read -r -p "Enter end slice number: " slice_end
                 read -r -p "Clean logs and restart services? (y/n): " restart
@@ -163,14 +155,14 @@ main() {
                 config=($(get_cluster_config "local"))
                 run_data_generator "local" "${config[@]}" "$slice_start" "$slice_end"
                 ;;
-            3)
+            2)
                 read -r -p "Clean logs and restart services? (y/n): " restart
                 [[ $restart == "y" ]] && restart_services
                 
                 config=($(get_cluster_config "cluster"))
                 run_wordcount "cluster" "${config[@]}"
                 ;;
-            4)
+            3)
                 read -r -p "Enter start slice number: " slice_start
                 read -r -p "Enter end slice number: " slice_end
                 read -r -p "Clean logs and restart services? (y/n): " restart
@@ -179,7 +171,7 @@ main() {
                 config=($(get_cluster_config "cluster"))
                 run_data_generator "cluster" "${config[@]}" "$slice_start" "$slice_end"
                 ;;
-            5)
+            4)
                 restart_services
                 ;;
             *)
