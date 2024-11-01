@@ -1,0 +1,7 @@
+pyspark
+PyYAML
+boto3
+ddlparse
+faker
+pylzma
+backports.lzma

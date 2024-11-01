@@ -1,0 +1,73 @@
+data:
+- data_type: CHARACTER VARYING
+  generator: randomize
+  length: 10
+  name: property_id
+  not_null: false
+  precision: 10
+  primary_key: false
+  unique: false
+- data_type: CHARACTER VARYING
+  generator: randomize
+  length: 100
+  name: property_name
+  not_null: false
+  precision: 100
+  primary_key: false
+  unique: false
+- data_type: CHARACTER VARYING
+  generator: randomize
+  length: 40
+  name: sob
+  not_null: true
+  precision: 40
+  primary_key: true
+  unique: false
+- data_type: BOOLEAN
+  generator: randomize
+  length: null
+  name: is_logged_in
+  not_null: false
+  precision: null
+  primary_key: false
+  unique: false
+- data_type: CHARACTER VARYING
+  generator: randomize
+  length: 20
+  name: mobile_device_locale
+  not_null: false
+  precision: 20
+  primary_key: false
+  unique: false
+- data_type: BIGINT
+  generator: randomize
+  length: null
+  name: page_views
+  not_null: false
+  precision: null
+  primary_key: false
+  unique: false
+- data_type: CHARACTER VARYING
+  generator: randomize
+  length: 20
+  name: property_family
+  not_null: false
+  precision: 20
+  primary_key: false
+  unique: false
+- data_type: DATE
+  generator: randomize
+  length: null
+  name: utc_date
+  not_null: false
+  precision: null
+  primary_key: false
+  unique: false
+- data_type: CHARACTER VARYING
+  generator: randomize
+  length: 20
+  name: core_action
+  not_null: false
+  precision: 20
+  primary_key: false
+  unique: false

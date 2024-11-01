@@ -1,0 +1,7 @@
+parquet*
+metastore_db/
+spark-warehouse/
+kevin*
+nohup.out
+derby.log
+nohup.out
