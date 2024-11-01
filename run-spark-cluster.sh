@@ -4,16 +4,16 @@
 set -euo pipefail
 
 # Script configuration
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly LOG_FILE="/var/log/spark-runner-$(date +%Y%m%d-%H%M%S).log"
-readonly SPARK_DIR="/root/40-apache-spark"
-readonly S3_BUCKET="s3a://luzbetak"
+readonly SCRIPT_DIR = "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly LOG_FILE   = "/var/log/spark-runner-$(date +%Y%m%d-%H%M%S).log"
+readonly SPARK_DIR  = "/root/40-apache-spark"
+readonly S3_BUCKET  = "s3a://luzbetak"
 
 # Default configurations
-readonly DEFAULT_DRIVER_MEMORY="4G"
-readonly DEFAULT_EXECUTOR_MEMORY="4G"
-readonly DEFAULT_MASTER="local[2]"
-readonly HADOOP_PACKAGE="org.apache.hadoop:hadoop-aws:2.7.7"
+readonly DEFAULT_DRIVER_MEMORY   = "4G"
+readonly DEFAULT_EXECUTOR_MEMORY = "4G"
+readonly DEFAULT_MASTER          = "local[2]"
+readonly HADOOP_PACKAGE          = "org.apache.hadoop:hadoop-aws:2.7.7"
 
 # Logging function
 log() {
