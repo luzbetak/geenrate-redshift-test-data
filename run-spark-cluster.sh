@@ -120,9 +120,9 @@ get_cluster_config() {
             ;;
         "cluster")
             config=(
-                "spark://172.31.9.145:7077"  # master
-                "16G"                        # driver memory
-                "16G"                        # executor memory
+                "spark://192.168.0.145:7077"  # master
+                "16G"                         # driver memory
+                "16G"                         # executor memory
             )
             ;;
         *)
