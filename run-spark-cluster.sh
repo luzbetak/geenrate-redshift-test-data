@@ -35,9 +35,8 @@ show_menu() {
     echo "           Apache Spark Runner Menu            "
     echo "==============================================="
     echo "1. Run Data Generator (Local Mode)"
-    echo "2. Run WordCount (Cluster Mode)"
-    echo "3. Run Data Generator (Cluster Mode)"
-    echo "4. Clean and Restart Hadoop Services"
+    echo "2. Run Data Generator (Cluster Mode)"
+    echo "3. Clean and Restart Hadoop Services"
     echo "0. Exit"
     echo "==============================================="
 }
@@ -53,25 +52,6 @@ restart_services() {
     sleep 5
     
     log "Services restarted successfully"
-}
-
-# Run WordCount job
-run_wordcount() {
-    local mode=$1
-    local master=$2
-    local driver_mem=$3
-    local executor_mem=$4
-    
-    log "Running WordCount in $mode mode..."
-    
-    spark-submit \
-        --packages "${HADOOP_PACKAGE}" \
-        --master "${master}" \
-        --driver-memory "${driver_mem}" \
-        --executor-memory "${executor_mem}" \
-        "${SPARK_DIR}/wordcount.py" \
-        "${S3_BUCKET}/input/alice29.txt" \
-        "${S3_BUCKET}/output-$(date +%Y%m%d-%H%M%S)/"
 }
 
 # Run Data Generator
@@ -156,13 +136,6 @@ main() {
                 run_data_generator "local" "${config[@]}" "$slice_start" "$slice_end"
                 ;;
             2)
-                read -r -p "Clean logs and restart services? (y/n): " restart
-                [[ $restart == "y" ]] && restart_services
-                
-                config=($(get_cluster_config "cluster"))
-                run_wordcount "cluster" "${config[@]}"
-                ;;
-            3)
                 read -r -p "Enter start slice number: " slice_start
                 read -r -p "Enter end slice number: " slice_end
                 read -r -p "Clean logs and restart services? (y/n): " restart
@@ -171,7 +144,7 @@ main() {
                 config=($(get_cluster_config "cluster"))
                 run_data_generator "cluster" "${config[@]}" "$slice_start" "$slice_end"
                 ;;
-            4)
+            3)
                 restart_services
                 ;;
             *)
